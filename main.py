@@ -3,8 +3,10 @@ import webview
 import os
 import json
 from datetime import datetime
+from database import DatabaseManager
 
 class PDF(FPDF):
+# ... (rest of PDF class)
     def header(self):
         # Logo
         logo_path = os.path.join(os.getcwd(), 'gui', 'assets', 'logo.jpg')
@@ -25,6 +27,7 @@ class PDF(FPDF):
 class Api:
     def __init__(self):
         self.window = None
+        self.db = DatabaseManager()
 
     def set_window(self, window):
         self.window = window
@@ -36,6 +39,9 @@ class Api:
             timestamp = datetime.now().strftime('%d-%m-%Y %H:%M')
             filename = f"Termo_{data['name'].replace(' ', '_')}.pdf"
             output_path = os.path.join(os.getcwd(), filename)
+            
+            # --- PERSISTÊNCIA NO BANCO ---
+            self.db.salvar_termo(data, output_path)
             
             pdf = PDF()
             pdf.set_auto_page_break(auto=True, margin=15)
