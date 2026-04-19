@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +9,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <nav class="app-bar">
         <div class="logo-container">
             <img src="assets/logo.jpg" alt="Serran Logo" onerror="this.style.display='none'">
             <span>STRS - Sistema de Termos de Responsabilidade Serrana</span>
         </div>
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="generate-view">Novo Termo</button>
+            <button class="tab-btn" data-tab="history-view">Histórico e Gestão</button>
+        </div>
     </nav>
 
     <main class="main-content">
-        <div class="container">
+        <!-- Gerador de Termos -->
+        <div id="generate-view" class="container tab-content active">
             <div class="card">
                 <header>
                     <h1>Gerador de Termos</h1>
@@ -28,6 +31,15 @@
                 </header>
 
                 <form id="term-form">
+                    <div class="form-group full-width">
+                        <label for="technician">Técnico Responsável</label>
+                        <select id="technician" name="technician" required>
+                            <option value="" disabled selected>Selecione o técnico...</option>
+                            <option value="Pedro Henrique">Pedro Henrique</option>
+                            <option value="André Victor">André Victor</option>
+                        </select>
+                    </div>
+
                     <div class="form-group full-width">
                         <label for="category">Categoria</label>
                         <select id="category" name="category" required>
@@ -58,8 +70,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="imei">IMEI / Número de Série</label>
-                        <input type="text" id="imei" name="imei" placeholder="Número identificador" required>
+                        <label for="imei">Identificador Único (IMEI / Serial / BIOS)</label>
+                        <input type="text" id="imei" name="imei" placeholder="Ex: IMEI, Serial da BIOS ou Patrimônio">
+                        <small style="display: block; margin-top: 4px; color: var(--text-muted); font-size: 0.75rem;">
+                            Dica: No PC, use o comando <code>wmic bios get serialnumber</code> no CMD.
+                        </small>
                     </div>
 
                     <div class="form-group">
@@ -79,8 +94,7 @@
 
                     <div class="form-group full-width">
                         <label for="description">Descrição / Observações</label>
-                        <textarea id="description" name="description"
-                            placeholder="Detalhes sobre o estado do aparelho, acessórios inclusos (carregador, capa, etc)."></textarea>
+                        <textarea id="description" name="description" placeholder="Detalhes sobre o estado do aparelho, acessórios inclusos (carregador, capa, etc)."></textarea>
                     </div>
 
                     <div class="btn-container" style="display: flex; gap: 1rem;">
@@ -88,22 +102,87 @@
                             🧪 Preencher Teste
                         </button>
                         <button type="submit" id="generate-btn" style="flex: 2;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <path d="M12 18v-6" />
-                                <path d="m9 15 3 3 3-3" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
                             Gerar Termo de Responsabilidade
                         </button>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!-- Histórico e Gestão -->
+        <div id="history-view" class="container tab-content">
+            <div class="card full-width-card">
+                <header>
+                    <h1>Histórico de Ativos</h1>
+                    <p>Gerencie os termos gerados e a situação dos equipamentos.</p>
+                </header>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Colaboradores c/ Ativos</span>
+                        <span id="stat-active-users" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Equipamentos em Campo</span>
+                        <span id="stat-active-devices" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Termos Totais</span>
+                        <span id="stat-total-terms" class="stat-value">0</span>
+                    </div>
+                </div>
+
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label>CPF</label>
+                        <input type="text" id="search-cpf" placeholder="Filtrar por CPF...">
+                    </div>
+                    <div class="filter-group">
+                        <label>IMEI</label>
+                        <input type="text" id="search-imei" placeholder="Filtrar por IMEI...">
+                    </div>
+                    <button id="btn-refresh" class="btn-secondary">Atualizar</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Colaborador</th>
+                                <th>Equipamento</th>
+                                <th>Entrega</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
+
+                    <!-- Controles de Paginação -->
+                    <div class="pagination-controls">
+                        <button id="prev-page" class="btn btn-secondary">Anterior</button>
+                        <span id="page-display" class="page-info">Página 1</span>
+                        <button id="next-page" class="btn btn-secondary">Próximo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <script src="script.js"></script>
+    <!-- Modal de Detalhes (Visão 360) -->
+    <div id="details-modal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modal-title">Detalhes</h2>
+                <button class="close-modal">&times;</button>
+            </header>
+            <div id="modal-body" class="modal-body">
+                <!-- Conteúdo injetado via JS -->
+            </div>
+        </div>
+    </div>
 </body>
-
 </html>

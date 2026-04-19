@@ -1,7 +1,31 @@
+# Ambiente Virtual
 venv/
+.venv/
+env/
+
+# Python
 __pycache__/
-*.json
+*.py[cod]
+*$py.class
+
+# Dados e Persistência (Local)
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# Arquivos de Teste e Rascunho
+scratch/
+tst.sql
+atividade.py
+
+# PDFs Gerados (Evitar poluir o repositório)
 *.pdf
-.DS_Store
-*.log
+
+# Arquivos de Configuração Sensíveis
 .env
+.env.*
+
+# IDEs
+.vscode/
+.idea/
