@@ -3,13 +3,22 @@ import os
 from datetime import datetime
 
 class PDFTerm(FPDF):
+    def __init__(self, data=None, logo_dir=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.data = data or {}
+        self.logo_dir = logo_dir or os.path.join(os.getcwd(), 'gui', 'assets')
+
     def header(self):
-        logo_path = os.path.join(os.getcwd(), 'gui', 'assets', 'logo.jpg')
+        logo_path = os.path.join(self.logo_dir, 'logo.jpg')
         if os.path.exists(logo_path):
             self.image(logo_path, 10, 8, 33)
         self.set_font('helvetica', 'B', 12)
         self.cell(40)
-        self.cell(0, 10, 'Chamado - Gerador Automático (Grupo Serrana)', 0, 1, 'L')
+        
+        # Puxa o ID do chamado (auto-incremento)
+        chamado_id = self.data.get('id', 'NOVO')
+        self.cell(0, 10, f'Chamado - ID {chamado_id} (Grupo Serrana)', 0, 1, 'L')
+        
         self.line(10, 25, 200, 25)
         self.ln(10)
 
@@ -20,10 +29,10 @@ class PDFTerm(FPDF):
 
 class PDFService:
     @staticmethod
-    def generate(data, output_path):
+    def generate(data, output_path, logo_dir=None):
         timestamp = datetime.now().strftime('%d-%m-%Y %H:%M')
         
-        pdf = PDFTerm()
+        pdf = PDFTerm(data=data, logo_dir=logo_dir)
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.alias_nb_pages()
         pdf.add_page()
@@ -45,7 +54,9 @@ class PDFService:
         pdf.cell(95, 6, f' Tempo interno para atendimento:', 1, 0, 'L')
         pdf.cell(95, 6, f' Tempo interno para solução:', 1, 1, 'L')
         pdf.cell(95, 6, f' Tipo: Requisição', 1, 0, 'L')
+        pdf.set_font('helvetica', 'B', 7)
         pdf.cell(95, 6, f' Categoria: {data["category"]}', 1, 1, 'L')
+        pdf.set_font('helvetica', 'B', 8)
         pdf.cell(95, 6, f' Status: Fechado - {timestamp}', 1, 0, 'L')
         pdf.cell(95, 6, f' Origem da requisição: Formcreator', 1, 1, 'L')
         pdf.cell(95, 6, f' Urgência: Muito Baixa', 1, 0, 'L')
@@ -63,7 +74,7 @@ class PDFService:
         pdf.cell(190, 6, f' Atribuído para grupos:', 1, 1, 'L')
         pdf.cell(190, 6, f' Atribuído a um fornecedor:', 1, 1, 'L')
         pdf.cell(190, 6, f' Título: Empréstimo de Aparelho', 1, 1, 'L')
-        pdf.cell(190, 6, f' Descrição:', 1, 1, 'L')
+        pdf.cell(190, 6, f' Descrição:', 'LTR', 1, 'L')
         pdf.ln(5)
 
         # --- CONTEÚDO DO FORMULÁRIO ---
@@ -109,14 +120,17 @@ class PDFService:
             pdf.cell(width, 6, label, 1, 0, 'C', fill=True)
         pdf.ln(10)
 
-        # --- PÁGINA 2: MANTER IGUAL ---
-        pdf.add_page()
+        # --- TERMO DE RESPONSABILIDADE ---
+        if pdf.get_y() + 150 > 280:
+            pdf.add_page()
+        else:
+            pdf.ln(5)
         pdf.set_fill_color(245, 245, 245)
         pdf.set_font('helvetica', 'B', 8)
-        pdf.cell(35, 6, ' Termo de Responsabilidade', 1, 0, 'L', fill=True)
+        pdf.cell(50, 6, ' Termo de Responsabilidade', 1, 0, 'L', fill=True)
         pdf.cell(35, 6, f' {timestamp}', 1, 0, 'C', fill=True)
-        pdf.cell(35, 6, ' 0 segundo', 1, 0, 'C', fill=True)
-        pdf.cell(50, 6, f' {data["name"]}', 1, 0, 'C', fill=True)
+        pdf.cell(20, 6, ' 0 segundo', 1, 0, 'C', fill=True)
+        pdf.cell(50, 6, f' {data["technician"]}', 1, 0, 'C', fill=True)
         pdf.cell(35, 6, ' Status: Feito', 1, 1, 'C', fill=True)
         pdf.set_font('helvetica', 'B', 9); pdf.cell(0, 6, 'Descrição:', 0, 1, 'L')
         pdf.set_font('helvetica', '', 9)
@@ -133,8 +147,8 @@ class PDFService:
         pdf.ln(5); pdf.set_fill_color(230, 230, 230)
         pdf.cell(0, 6, 'Documento: Nenhum item para ser mostrado', 1, 1, 'C', fill=True)
         pdf.ln(2); pdf.cell(0, 6, 'Solução: Nenhum item para ser mostrado', 1, 1, 'C', fill=True)
-        pdf.ln(15); pdf.line(20, pdf.get_y(), 90, pdf.get_y()); pdf.line(110, pdf.get_y(), 180, pdf.get_y())
-        pdf.set_font('helvetica', 'B', 8); pdf.cell(90, 5, 'Assinatura do Colaborador', 0, 0, 'C'); pdf.cell(90, 5, 'Assinatura Responsável TI', 0, 1, 'C')
+        pdf.ln(25); pdf.line(60, pdf.get_y(), 150, pdf.get_y())
+        pdf.set_font('helvetica', 'B', 9); pdf.cell(0, 5, 'Assinatura do Colaborador', 0, 1, 'C')
 
         pdf.output(output_path)
         return output_path

@@ -1,47 +1,65 @@
-# STRS - Sistema de Termos de Responsabilidade Serrana
+# 📑 STRS - Sistema de Termos de Responsabilidade
 
-O **STRS** é uma aplicação desktop desenvolvida para automatizar a geração de Termos de Responsabilidade de equipamentos (empréstimos de aparelhos). O sistema gera documentos em PDF seguindo o padrão de relatórios do GLPI, garantindo conformidade e organização no controle de ativos de TI.
+O **STRS** é uma aplicação desktop profissional desenvolvida para automatizar a gestão e emissão de Termos de Responsabilidade para empréstimos de ativos de TI. Inspirado no padrão de relatórios do GLPI, o sistema oferece uma solução completa para controle de inventário, conformidade jurídica e auditoria de ações.
 
-## 🚀 Funcionalidades
+---
 
-- **Interface Moderna**: Desenvolvida com tecnologias web (HTML/CSS/JS) integrada ao Python via `pywebview`.
-- **Geração de PDF**: Emissão instantânea de termos com tabelas de metadados, cláusulas legais e campos de assinatura.
-- **Padrão GLPI**: Layout idêntico aos chamados do GLPI para facilitar a integração visual com processos já existentes.
-- **Máscaras Automáticas**: Campos como CPF possuem formatação automática para evitar erros.
+## ✨ Funcionalidades Principais
+
+- **🛡️ Auditoria Completa**: Aba exclusiva para administradores rastrearem todas as ações realizadas (criações, edições, devoluções e trocas de chip).
+- **📊 Dashboard de Gestão**: Indicadores em tempo real sobre o total de termos, equipamentos em uso e usuários ativos.
+- **📁 Dossiê 360º**: Histórico individualizado por colaborador e por equipamento (IMEI/Serial), permitindo rastreabilidade total do ciclo de vida do ativo.
+- **📄 Geração de PDF Premium**: Emissão de termos em PDF com layout profissional, cláusulas legais automatizadas e metadados de chamado.
+- **⚡ Interface Moderna**: Experiência de usuário fluida com tecnologias web (HTML/CSS/JS) rodando nativamente via `pywebview`.
+- **🔍 Busca e Filtros Avançados**: Localização instantânea de registros por CPF, IMEI, Nome, Filial ou Status.
+
+---
+
+## 🏗️ Arquitetura do Sistema
+
+O projeto segue padrões avançados de desenvolvimento para garantir manutenção fácil e escalabilidade:
+
+- **Service Layer**: Lógica de negócio orquestrada centralmente (ex: `TermService`).
+- **Repository Pattern**: Camada de acesso a dados isolada, garantindo integridade nas operações do banco de dados.
+- **SQLite Engine**: Banco de dados relacional local, rápido e sem necessidade de servidores externos.
+- **Clean Interface**: Separação total entre a lógica Python (Backend) e a interface visual (Frontend).
+
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Python 3.x**
-- **pywebview**: Para a camada de interface desktop.
-- **fpdf2**: Motor de geração de documentos PDF.
-- **HTML5/CSS3/JS**: Para o design premium e responsivo.
+- **pywebview**: Container desktop para a interface.
+- **fpdf2**: Motor de geração de documentos PDF de alta performance.
+- **SQLite3**: Banco de dados local.
+- **Google Fonts (Inter)**: Tipografia moderna e legível.
 
-## 📦 Instalação
+---
 
-1. Clone o repositório:
+## 📦 Instalação e Uso
+
+1. **Ativar o Ambiente Virtual:**
    ```bash
-   git clone https://github.com/seu-usuario/controle_termos.git
-   ```
-
-2. Crie e ative um ambiente virtual:
-   ```bash
-   python -m venv venv
    .\venv\Scripts\activate
    ```
 
-3. Instale as dependências:
+2. **Instalar Dependências:**
    ```bash
    pip install -r requirements.txt
    ```
 
-## 🖥️ Como Usar
-
-Para iniciar a aplicação, execute o comando:
-```bash
-python main.py
-```
-
-Preencha os dados do colaborador e do equipamento no formulário e clique em **"Gerar Termo de Responsabilidade"**. O PDF será gerado na raiz do projeto e aberto automaticamente.
+3. **Iniciar a Aplicação:**
+   ```bash
+   python main.py
+   ```
 
 ---
-Desenvolvido para **Serrana Distribuidora**.
+
+## 📂 Estrutura de Pastas
+
+- `/app`: Cérebro da aplicação (Serviços, Repositórios e Banco de Dados).
+- `/gui`: Interface visual (HTML, CSS, JS e Assets).
+- `/data`: Armazenamento de PDFs gerados e arquivo do Banco de Dados.
+
+---
+Desenvolvido por André Victor para **Grupo Serrana**.

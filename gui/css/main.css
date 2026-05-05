@@ -1,0 +1,136 @@
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-light: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --input-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --app-bar-bg: #ffffff;
+    --success: #22c55e;
+    --status-active: #dcfce7;
+    --status-active-text: #166534;
+    --status-final: #f1f5f9;
+    --status-final-text: #475569;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* App Bar */
+.app-bar {
+    height: 70px;
+    background: var(--app-bar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-container img {
+    height: 35px;
+}
+
+.logo-container span {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1e3a8a;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: var(--bg-light);
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 1050px;
+    display: none;
+}
+
+.container.active {
+    display: block;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+header p {
+    color: var(--text-muted);
+}
+
+/* Footer Discreto */
+.app-footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}

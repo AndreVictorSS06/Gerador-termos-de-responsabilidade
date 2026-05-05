@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Serran - Gerador de Termos</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/views.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <nav class="app-bar">
         <div class="logo-container">
@@ -18,6 +22,7 @@
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="generate-view">Novo Termo</button>
             <button class="tab-btn" data-tab="history-view">Histórico e Gestão</button>
+            <button class="tab-btn" data-tab="logs-view">Logs</button>
         </div>
     </nav>
 
@@ -31,21 +36,17 @@
                 </header>
 
                 <form id="term-form">
-                    <div class="form-group full-width">
-                        <label for="technician">Técnico Responsável</label>
-                        <select id="technician" name="technician" required>
-                            <option value="" disabled selected>Selecione o técnico...</option>
-                            <option value="Pedro Henrique">Pedro Henrique</option>
-                            <option value="André Victor">André Victor</option>
-                        </select>
-                    </div>
+
 
                     <div class="form-group full-width">
                         <label for="category">Categoria</label>
                         <select id="category" name="category" required>
-                            <option value="TI. > Empréstimo de aparelho > Termo de Responsabilidade" selected>
-                                TI. > Empréstimo de aparelho > Termo de Responsabilidade
-                            </option>
+                            <option value="Celular" selected>Celular</option>
+                            <option value="Notebook">Notebook</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Chip">Somente Chip</option>
+                            <option value="Periférico">Periférico (Mouse, Teclado, etc)</option>
+                            <option value="Outros">Outros</option>
                         </select>
                     </div>
 
@@ -57,6 +58,25 @@
                     <div class="form-group">
                         <label for="cpf">CPF</label>
                         <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargo">Cargo / Função (Opcional)</label>
+                        <input type="text" id="cargo" name="cargo" placeholder="Ex: Analista de TI">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filial">Filial / Localidade</label>
+                        <select id="filial" name="filial" required>
+                            <option value="">Selecione uma filial...</option>
+                            <option value="4 - via rural">4 - via rural</option>
+                            <option value="7- Serrana Pi">7- Serrana Pi</option>
+                            <option value="8 - Serrana Ce">8 - Serrana Ce</option>
+                            <option value="9 - Serrana Ma">9 - Serrana Ma</option>
+                            <option value="10 - Decvet Ce">10 - Decvet Ce</option>
+                            <option value="12 - Decvet Pi">12 - Decvet Pi</option>
+                            <option value="96 - Thenda Construtora">96 - Thenda Construtora</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -73,8 +93,13 @@
                         <label for="imei">Identificador Único (IMEI / Serial / BIOS)</label>
                         <input type="text" id="imei" name="imei" placeholder="Ex: IMEI, Serial da BIOS ou Patrimônio">
                         <small style="display: block; margin-top: 4px; color: var(--text-muted); font-size: 0.75rem;">
-                            Dica: No PC, use o comando <code>wmic bios get serialnumber</code> no CMD.
+                            Dica: No PC, use o comando <code>"wmic bios get serialnumber"</code> no CMD.
                         </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chip">Número do Chip / Linha (Opcional)</label>
+                        <input type="text" id="chip" name="chip" placeholder="Ex: (11) 99999-9999">
                     </div>
 
                     <div class="form-group">
@@ -94,15 +119,20 @@
 
                     <div class="form-group full-width">
                         <label for="description">Descrição / Observações</label>
-                        <textarea id="description" name="description" placeholder="Detalhes sobre o estado do aparelho, acessórios inclusos (carregador, capa, etc)."></textarea>
+                        <textarea id="description" name="description"
+                            placeholder="Detalhes sobre o estado do aparelho, acessórios inclusos (carregador, capa, etc)."></textarea>
                     </div>
 
-                    <div class="btn-container" style="display: flex; gap: 1rem;">
-                        <button type="button" id="mock-btn" style="background: #e2e8f0; color: #475569; width: auto; flex: 1;">
-                            🧪 Preencher Teste
-                        </button>
-                        <button type="submit" id="generate-btn" style="flex: 2;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                    <div class="btn-container">
+                        <button type="submit" id="generate-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <path d="M12 18v-6" />
+                                <path d="m9 15 3 3 3-3" />
+                            </svg>
                             Gerar Termo de Responsabilidade
                         </button>
                     </div>
@@ -118,41 +148,102 @@
                     <p>Gerencie os termos gerados e a situação dos equipamentos.</p>
                 </header>
 
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <span class="stat-label">Colaboradores c/ Ativos</span>
-                        <span id="stat-active-users" class="stat-value">0</span>
+                <!-- Dashboard de Resumo -->
+                <div class="dashboard-grid">
+                    <div class="dash-card dash-total">
+                        <div class="dash-icon">📑</div>
+                        <div class="dash-info">
+                            <span class="dash-label">Total de Termos</span>
+                            <span class="dash-value" id="stat-total">0</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Equipamentos em Campo</span>
-                        <span id="stat-active-devices" class="stat-value">0</span>
+                    <div class="dash-card dash-active">
+                        <div class="dash-icon">📱</div>
+                        <div class="dash-info">
+                            <span class="dash-label">Ativos (Em Uso)</span>
+                            <span class="dash-value" id="stat-active">0</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Termos Totais</span>
-                        <span id="stat-total-terms" class="stat-value">0</span>
+                    <div class="dash-card dash-users">
+                        <div class="dash-icon">👤</div>
+                        <div class="dash-info">
+                            <span class="dash-label">Usuários Ativos</span>
+                            <span class="dash-value" id="stat-users">0</span>
+                        </div>
+                    </div>
+                    <div class="dash-card dash-finished">
+                        <div class="dash-icon">✅</div>
+                        <div class="dash-info">
+                            <span class="dash-label">Devolvidos</span>
+                            <span class="dash-value" id="stat-finished">0</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="filters-container">
                     <div class="filter-group">
+                        <label>Colaborador</label>
+                        <input type="text" id="search-name" placeholder="Nome do colaborador...">
+                    </div>
+                    <div class="filter-group">
                         <label>CPF</label>
-                        <input type="text" id="search-cpf" placeholder="Filtrar por CPF...">
+                        <input type="text" id="search-cpf" placeholder="CPF...">
                     </div>
                     <div class="filter-group">
                         <label>IMEI</label>
-                        <input type="text" id="search-imei" placeholder="Filtrar por IMEI...">
+                        <input type="text" id="search-imei" placeholder="IMEI/Serial...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="search-status">
+                            <option value="">Todos</option>
+                            <option value="Ativo">Ativos</option>
+                            <option value="Finalizado">Finalizados</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Categoria</label>
+                        <select id="search-category">
+                            <option value="">Todas</option>
+                            <option value="Celular">Celular</option>
+                            <option value="Notebook">Notebook</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Chip">Somente Chip</option>
+                            <option value="Periférico">Periférico</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filial</label>
+                        <select id="search-filial">
+                            <option value="">Todas</option>
+                            <option value="4 - Via Rural">4 - Via Rural</option>
+                            <option value="7- Serrana Pi">7- Serrana Pi</option>
+                            <option value="8 - Serrana Ce">8 - Serrana Ce</option>
+                            <option value="9 - Serrana Ma">9 - Serrana Ma</option>
+                            <option value="10 - Decvet Ce">10 - Decvet Ce</option>
+                            <option value="12 - Decvet Pi">12 - Decvet Pi</option>
+                            <option value="96 - Thenda Construtora">96 - Thenda Construtora</option>
+                        </select>
                     </div>
                     <button id="btn-refresh" class="btn-secondary">Atualizar</button>
                 </div>
 
                 <div class="table-wrapper">
+                    <div id="history-loading-indicator"
+                        style="display: none; text-align: center; padding: 10px; color: var(--primary);">⌛ Carregando
+                        histórico...</div>
                     <table id="history-table">
                         <thead>
                             <tr>
-                                <th>Colaborador</th>
-                                <th>Equipamento</th>
-                                <th>Entrega</th>
-                                <th>Status</th>
+                                <th onclick="handleSort('colaborador')" class="sortable">Colaborador <span
+                                        id="sort-colaborador" class="sort-icon"></span></th>
+                                <th onclick="handleSort('equipamento')" class="sortable">Equipamento <span
+                                        id="sort-equipamento" class="sort-icon"></span></th>
+                                <th onclick="handleSort('entrega')" class="sortable">Entrega <span id="sort-entrega"
+                                        class="sort-icon"></span></th>
+                                <th onclick="handleSort('status')" class="sortable">Status <span id="sort-status"
+                                        class="sort-icon"></span></th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -160,18 +251,58 @@
                             <!-- Injetado via JS -->
                         </tbody>
                     </table>
+                </div>
 
-                    <!-- Controles de Paginação -->
-                    <div class="pagination-controls">
-                        <button id="prev-page" class="btn btn-secondary">Anterior</button>
-                        <span id="page-display" class="page-info">Página 1</span>
-                        <button id="next-page" class="btn btn-secondary">Próximo</button>
+                <!-- Controles de Paginação movidos para fora do scroll -->
+                <div class="pagination-controls">
+                    <button id="first-page" class="btn btn-secondary">«</button>
+                    <button id="prev-page" class="btn btn-secondary">Anterior</button>
+                    <span id="page-display" class="page-info">Página 1</span>
+                    <button id="next-page" class="btn btn-secondary">Próximo</button>
+                    <button id="last-page" class="btn btn-secondary">»</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auditoria e Logs -->
+        <div id="logs-view" class="container tab-content">
+            <div class="card full-width-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem;">Logs de Auditoria</h1>
+                        <p style="color: var(--text-muted);">Rastreabilidade de todas as ações realizadas no sistema.</p>
                     </div>
+                    <button id="btn-refresh-logs" class="btn-secondary" style="display: flex; align-items: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                        Atualizar Logs
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Usuário</th>
+                                <th>Ação</th>
+                                <th>Entidade</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-body">
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </main>
-    <script src="script.js"></script>
+
+    <footer class="app-footer">
+        Desenvolvido por André Victor
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
     <!-- Modal de Detalhes (Visão 360) -->
     <div id="details-modal" class="modal-overlay">
         <div class="modal-content">
@@ -184,5 +315,110 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Edição de Termo -->
+    <div id="edit-term-modal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Editar Termo</h2>
+                <button class="close-modal">&times;</button>
+            </header>
+            <div class="modal-body">
+                <form id="edit-term-form">
+                    <input type="hidden" id="edit-termo-id" name="id">
+
+                    <div class="form-group full-width">
+                        <label for="edit-category">Categoria</label>
+                        <select id="edit-category" name="category" required>
+                            <option value="Celular" selected>Celular</option>
+                            <option value="Notebook">Notebook</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Chip">Somente Chip</option>
+                            <option value="Periférico">Periférico (Mouse, Teclado, etc)</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-name">Nome Completo</label>
+                        <input type="text" id="edit-name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-cpf">CPF</label>
+                        <input type="text" id="edit-cpf" name="cpf" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-cargo">Cargo / Função (Opcional)</label>
+                        <input type="text" id="edit-cargo" name="cargo">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-filial">Filial / Localidade</label>
+                        <select id="edit-filial" name="filial" required>
+                            <option value="">Selecione uma filial...</option>
+                            <option value="4 - Via Rural">4 - Via Rural</option>
+                            <option value="7- Serrana Pi">7- Serrana Pi</option>
+                            <option value="8 - Serrana Ce">8 - Serrana Ce</option>
+                            <option value="9 - Serrana Ma">9 - Serrana Ma</option>
+                            <option value="10 - Decvet Ce">10 - Decvet Ce</option>
+                            <option value="12 - Decvet Pi">12 - Decvet Pi</option>
+                            <option value="96 - Thenda Construtora">96 - Thenda Construtora</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-brand">Marca</label>
+                        <input type="text" id="edit-brand" name="brand" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-model">Modelo</label>
+                        <input type="text" id="edit-model" name="model" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-imei">Identificador Único (IMEI / Serial / BIOS)</label>
+                        <input type="text" id="edit-imei" name="imei">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-chip">Número do Chip / Linha</label>
+                        <input type="text" id="edit-chip" name="chip">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-value">Valor do Equipamento (R$)</label>
+                        <input type="text" id="edit-value" name="value" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-delivery-date">Data de Entrega</label>
+                        <input type="date" id="edit-delivery-date" name="delivery_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-return-date">Data de Devolução</label>
+                        <input type="date" id="edit-return-date" name="return_date">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="edit-description">Descrição / Observações</label>
+                        <textarea id="edit-description" name="description"></textarea>
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="submit" id="save-edit-btn" class="btn-primary">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
 </body>
+
 </html>
